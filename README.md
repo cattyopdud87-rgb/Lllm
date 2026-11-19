@@ -7,12 +7,17 @@ Real-time, zero-disk-I/O offline voice assistant running natively on Android 15 
 
 ## Quick Start
 ```bash
+# Automated setup (installs deps, checks binaries & models, verifies PulseAudio)
+./install.sh
+
 # Start / check warm llama-server (auto-unloads after 10 min idle to free ~1 GiB DRAM)
 ./src/llama-server.sh start
 
 # Run streaming voice assistant
 ./src/vaani_stream.py
 ```
+
+For full engineering specs, quantization benchmarks, and ARMv8.2-A compilation flags, see [AGENT.md](AGENT.md).
 
 ## Directory Structure
 - `src/`: Core streaming voice engine (`vaani_stream.py`), llama-server controller (`llama-server.sh`), and batch assistant (`vaani-assistant.sh`).

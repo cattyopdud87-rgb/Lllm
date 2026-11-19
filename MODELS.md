@@ -1,6 +1,6 @@
 # Local Offline Speech AI Model Inventory (Excluded from Git)
 
-Large model weights are ignored by `.gitignore` and stored locally under `/data/data/com.termux/files/home/development/model/`:
+Large model weights are ignored by `.gitignore` and stored in `models/` (or downloaded via `./scripts/fetch_models.sh`):
 
 | Role | Filename | Size | Target Hardware |
 | :--- | :--- | :--- | :--- |

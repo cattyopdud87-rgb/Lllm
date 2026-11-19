@@ -13,9 +13,10 @@ import argparse, json, os, re, subprocess, sys, time, urllib.request, wave
 import numpy as np
 import onnxruntime as ort
 
-MODEL_DIR = "/data/data/com.termux/files/home/development/model"
-WHISPER_CLI = "/data/data/com.termux/files/home/development/Lllm/artifacts/vaani-arm64-31424b7-727d3e7/bin/whisper-cli"
-PIPER_BIN = "/data/local/tmp/vaani-lab/piper/piper"
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODEL_DIR = os.path.join(REPO_ROOT, "models") if os.path.isdir(os.path.join(REPO_ROOT, "models")) else "/data/data/com.termux/files/home/development/model"
+WHISPER_CLI = os.path.join(REPO_ROOT, "bin", "whisper-cli") if os.path.exists(os.path.join(REPO_ROOT, "bin", "whisper-cli")) else "/data/data/com.termux/files/home/development/Lllm/artifacts/vaani-arm64-31424b7-727d3e7/bin/whisper-cli"
+PIPER_BIN = os.path.join(REPO_ROOT, "bin", "piper", "piper") if os.path.exists(os.path.join(REPO_ROOT, "bin", "piper", "piper")) else "/data/local/tmp/vaani-lab/piper/piper"
 STT_MODEL = os.environ.get("STT_MODEL", f"{MODEL_DIR}/ggml-tiny-q5_1.bin")
 TTS_MODEL = os.environ.get("TTS_MODEL", f"{MODEL_DIR}/en_US-amy-medium.onnx")
 VAD_MODEL = f"{MODEL_DIR}/silero_vad.onnx"
@@ -26,7 +27,7 @@ CLAUSE_RE = re.compile(r'([.!?;:\n]+)(\s+|$)')
 
 
 def ensure_llama_server_awake():
-    subprocess.run(["/data/data/com.termux/files/home/development/llama-server.sh", "start"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run([os.path.join(REPO_ROOT, "src", "llama-server.sh"), "start"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 def set_gold_boost(enable: bool):
     if enable:
