@@ -153,7 +153,7 @@ def transcribe_pcm_in_ram(pcm_bytes: bytes = None, wav_path: str = None) -> str:
             wf.writeframes(pcm_bytes)
         target = tmp_ram
     res = subprocess.run(
-        ["taskset", "-c", "6,7", WHISPER_CLI, "-m", STT_MODEL, "-f", target, "-t", "2", "-nt", "-np"],
+        ["taskset", "-c", "6,7", WHISPER_CLI, "-m", STT_MODEL, "-f", target, "-t", "2", "-bo", "1", "-bs", "1", "-nt", "-np"],
         capture_output=True, text=True
     )
     if not wav_path and os.path.exists(tmp_ram):

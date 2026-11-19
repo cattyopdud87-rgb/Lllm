@@ -23,7 +23,7 @@ start_idle_reaper() {
         last=\$(cat \"$STAMP\" 2>/dev/null || echo 0)
         now=\$(date +%s)
         if [ \"\$last\" -gt 0 ] && [ \$((now - last)) -ge $IDLE_TIMEOUT_SEC ]; then
-          pkill -f \"llama-server.*8080\" 2>/dev/null || true
+          pkill -f \"llama-server.*8080\" 2>/dev/null || true; su -c \"echo 60 > /proc/sys/vm/swappiness 2>/dev/null\" || true
           echo \"[\$(date)] Auto-unloaded idle llama-server after ${IDLE_TIMEOUT_SEC}s\" >> \"$LOG\"
           break
         fi
@@ -35,7 +35,7 @@ start_idle_reaper() {
 case "${1:-status}" in
   start)
     touch_stamp
-    su -c 'echo 0-7 > /dev/cpuset/foreground/cpus 2>/dev/null' || true
+    su -c 'echo 0-7 > /dev/cpuset/foreground/cpus 2>/dev/null; echo 100 > /proc/sys/vm/swappiness 2>/dev/null' || true
     if pgrep -f "llama-server.*8080" >/dev/null 2>&1; then
       start_idle_reaper
       echo "llama-server already running (PID $(pgrep -f 'llama-server.*8080'))."
@@ -57,7 +57,7 @@ case "${1:-status}" in
   touch) touch_stamp ;;
   stop)
     pkill -f "vaani_idle_reaper" 2>/dev/null || true
-    pkill -f "llama-server.*8080" 2>/dev/null && echo "llama-server stopped." || echo "llama-server was not running."
+    pkill -f "llama-server.*8080" 2>/dev/null && su -c "echo 60 > /proc/sys/vm/swappiness 2>/dev/null" && echo "llama-server stopped (swappiness=60)." || echo "llama-server was not running."
     ;;
   restart) "$0" stop; sleep 1; "$0" start ;;
   status)
