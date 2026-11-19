@@ -1,0 +1,10 @@
+*.gguf
+*.bin
+*.onnx
+*.wav
+*.pcm
+*.tar.gz
+*.log
+__pycache__/
+build*/
+.DS_Store
